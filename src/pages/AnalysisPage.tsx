@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LayoutGrid, LineChart, MapPinned, ArrowLeft, Sun, Moon, LogOut } from 'lucide-react';
+import { LayoutGrid, LineChart, MapPinned, ArrowLeft, Sun, Moon, LogOut, Menu } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function AnalysisPage() {
@@ -19,6 +19,10 @@ export default function AnalysisPage() {
     window.location.href = '/login';
   };
 
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     document.documentElement.classList.toggle('dark', isDarkMode);
@@ -29,15 +33,15 @@ export default function AnalysisPage() {
       {/* Sidebar */}
       <div 
         className={`fixed inset-y-0 left-0 z-[1001] flex flex-col gap-4 border-r border-slate-200 bg-white/95 shadow-lg ring-1 ring-slate-900/5 transition-all duration-300 dark:border-slate-700 dark:bg-slate-900/95 ${
-          sidebarExpanded ? 'w-56' : 'w-16'
+          sidebarVisible || sidebarExpanded ? 'w-56 translate-x-0' : 'w-16 -translate-x-full md:translate-x-0'
         }`}
         onMouseEnter={() => setSidebarExpanded(true)}
         onMouseLeave={() => setSidebarExpanded(false)}
       >
         {/* Header */}
-        <div className={`flex items-center justify-between px-4 py-6 ${sidebarExpanded ? '' : 'px-3'}`}>
+        <div className={`flex items-center justify-between px-4 py-6 ${sidebarVisible || sidebarExpanded ? '' : 'px-3'}`}>
           <span className={`text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 transition-opacity duration-200 ${
-            sidebarExpanded ? 'opacity-100' : 'opacity-0'
+            sidebarVisible || sidebarExpanded ? 'opacity-100' : 'opacity-0'
           }`}>
             Paneles
           </span>
@@ -46,34 +50,42 @@ export default function AnalysisPage() {
         {/* Navigation */}
         <nav className="flex flex-1 flex-col gap-2 px-4 pb-6">
           <Link to="/" className={`flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all duration-200 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white ${
-            sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
+            sidebarVisible || sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
           } ${window.location.pathname === '/' ? 'bg-slate-900 text-white shadow dark:bg-slate-100 dark:text-slate-900' : 'text-slate-600'}`}>
-            <LayoutGrid className="h-4 w-4 flex-shrink-0" />
-            <span className={`transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+            <LayoutGrid className={`h-4 w-4 flex-shrink-0`} style={sidebarVisible || sidebarExpanded ? { paddingLeft: '12px !important' } : {}} />
+            <span className={`transition-opacity duration-200 ${sidebarVisible || sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
               Tiempo real
             </span>
           </Link>
           
           <Link to="/analisis" className={`flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all duration-200 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white ${
-            sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
+            sidebarVisible || sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
           } ${window.location.pathname === '/analisis' ? 'bg-slate-900 text-white shadow dark:bg-slate-100 dark:text-slate-900' : 'text-slate-600'}`}>
-            <LineChart className="h-4 w-4 flex-shrink-0" />
-            <span className={`transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+            <LineChart className={`h-4 w-4 flex-shrink-0`} style={sidebarVisible || sidebarExpanded ? { paddingLeft: '12px !important' } : {}} />
+            <span className={`transition-opacity duration-200 ${sidebarVisible || sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
               Análisis
             </span>
           </Link>
           
           <Link to="/intersecciones" className={`flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all duration-200 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white ${
-            sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
+            sidebarVisible || sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
           } ${window.location.pathname === '/intersecciones' ? 'bg-slate-900 text-white shadow dark:bg-slate-100 dark:text-slate-900' : 'text-slate-600'}`}>
-            <MapPinned className="h-4 w-4 flex-shrink-0" />
-            <span className={`transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+            <MapPinned className={`h-4 w-4 flex-shrink-0`} style={sidebarVisible || sidebarExpanded ? { paddingLeft: '12px !important' } : {}} />
+            <span className={`transition-opacity duration-200 ${sidebarVisible || sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
               Intersecciones
             </span>
           </Link>
         </nav>
       </div>
-      <main className={`flex-1 overflow-auto transition-all duration-300 ${isDarkMode ? 'bg-slate-900' : 'bg-slate-50'}`} style={{ marginLeft: sidebarExpanded ? '224px' : '64px' }}>
+      {/* Overlay for mobile sidebar */}
+      {sidebarVisible && (
+        <div 
+          className="fixed inset-0 z-[1000] bg-black/50 md:hidden" 
+          onClick={() => setSidebarVisible(false)}
+        />
+      )}
+
+      <main className={`flex-1 overflow-auto transition-all duration-300 md:ml-16 ${isDarkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
         <div className="container mx-auto px-6 py-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -92,6 +104,12 @@ export default function AnalysisPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                onClick={toggleSidebar}
+                className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
               <button
                 onClick={handleLogout}
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 dark:text-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg transition-colors"
