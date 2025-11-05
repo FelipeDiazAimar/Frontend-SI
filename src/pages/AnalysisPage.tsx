@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BarChart3, TrendingUp, Activity, ArrowLeft, Sun, Moon, LogOut } from 'lucide-react';
+import { LayoutGrid, LineChart, MapPinned, ArrowLeft, Sun, Moon, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function AnalysisPage() {
@@ -11,6 +11,7 @@ export default function AnalysisPage() {
     setIsDarkMode(!isDarkMode);
   };
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -25,29 +26,54 @@ export default function AnalysisPage() {
 
   return (
     <div className={`flex min-h-screen ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
-      <div className="fixed left-0 top-0 w-8 h-full z-10" onMouseEnter={() => setSidebarVisible(true)} />
-      <div className={`fixed inset-y-0 left-0 z-[1001] flex w-56 transform flex-col gap-4 border-r border-slate-200 bg-white/95 px-4 py-6 shadow-lg ring-1 ring-slate-900/5 transition-transform duration-300 dark:border-slate-700 dark:bg-slate-900/95 ${sidebarVisible ? 'translate-x-0' : '-translate-x-full'}`} onMouseEnter={() => setSidebarVisible(true)} onMouseLeave={() => setSidebarVisible(false)}>
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+      {/* Sidebar */}
+      <div 
+        className={`fixed inset-y-0 left-0 z-[1001] flex flex-col gap-4 border-r border-slate-200 bg-white/95 shadow-lg ring-1 ring-slate-900/5 transition-all duration-300 dark:border-slate-700 dark:bg-slate-900/95 ${
+          sidebarExpanded ? 'w-56' : 'w-16'
+        }`}
+        onMouseEnter={() => setSidebarExpanded(true)}
+        onMouseLeave={() => setSidebarExpanded(false)}
+      >
+        {/* Header */}
+        <div className={`flex items-center justify-between px-4 py-6 ${sidebarExpanded ? '' : 'px-3'}`}>
+          <span className={`text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 transition-opacity duration-200 ${
+            sidebarExpanded ? 'opacity-100' : 'opacity-0'
+          }`}>
             Paneles
           </span>
         </div>
-        <nav className="flex flex-1 flex-col gap-2">
-          <Link to="/" className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/60">
-            <BarChart3 className="h-4 w-4" />
-            Tiempo real
+        
+        {/* Navigation */}
+        <nav className="flex flex-1 flex-col gap-2 px-4 pb-6">
+          <Link to="/" className={`flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all duration-200 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white ${
+            sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
+          } ${window.location.pathname === '/' ? 'bg-slate-900 text-white shadow dark:bg-slate-100 dark:text-slate-900' : 'text-slate-600'}`}>
+            <LayoutGrid className="h-4 w-4 flex-shrink-0" />
+            <span className={`transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+              Tiempo real
+            </span>
           </Link>
-          <Link to="/analisis" className="flex items-center gap-3 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow dark:bg-slate-100 dark:text-slate-900">
-            <TrendingUp className="h-4 w-4" />
-            Análisis
+          
+          <Link to="/analisis" className={`flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all duration-200 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white ${
+            sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
+          } ${window.location.pathname === '/analisis' ? 'bg-slate-900 text-white shadow dark:bg-slate-100 dark:text-slate-900' : 'text-slate-600'}`}>
+            <LineChart className="h-4 w-4 flex-shrink-0" />
+            <span className={`transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+              Análisis
+            </span>
           </Link>
-          <Link to="/intersecciones" className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/60">
-            <Activity className="h-4 w-4" />
-            Intersecciones
+          
+          <Link to="/intersecciones" className={`flex items-center justify-center rounded-full w-8 h-8 text-sm font-semibold transition-all duration-200 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white ${
+            sidebarExpanded ? 'w-auto h-auto px-3 py-2 gap-3' : 'justify-center items-center'
+          } ${window.location.pathname === '/intersecciones' ? 'bg-slate-900 text-white shadow dark:bg-slate-100 dark:text-slate-900' : 'text-slate-600'}`}>
+            <MapPinned className="h-4 w-4 flex-shrink-0" />
+            <span className={`transition-opacity duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>
+              Intersecciones
+            </span>
           </Link>
         </nav>
       </div>
-      <main className={`flex-1 overflow-auto ${isDarkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
+      <main className={`flex-1 overflow-auto transition-all duration-300 ${isDarkMode ? 'bg-slate-900' : 'bg-slate-50'}`} style={{ marginLeft: sidebarExpanded ? '224px' : '64px' }}>
         <div className="container mx-auto px-6 py-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -97,7 +123,7 @@ export default function AnalysisPage() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-card border border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <LayoutGrid className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 Flujo de Vehículos
@@ -122,7 +148,7 @@ export default function AnalysisPage() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-card border border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <LineChart className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 Eficiencia del Sistema
@@ -147,7 +173,7 @@ export default function AnalysisPage() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-card border border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <Activity className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                <MapPinned className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 Patrones de Congestión
